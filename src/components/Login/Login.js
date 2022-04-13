@@ -1,25 +1,49 @@
-import React from 'react';
+// import { signInWithEmailAndPassword } from 'firebase/auth';
+import { useAuthState, useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import auth from '../../firebase.init';
 import './Login.css'
 
 const Login = () => {
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('');
+    const [signInWithEmailAndPassword ] = useSignInWithEmailAndPassword(auth);
+    const [user] = useAuthState(auth)
+
+
+    const handleEmailBlur = e =>{
+        setEmail(e.target.value)
+    }
+    const handlePasswordBlur = e =>{
+        setPassword(e.target.value)
+    }
+    const prevent = (e) =>{
+        e.preventDefault()
+    }
+    const signInUser = ()=>{
+        signInWithEmailAndPassword(email, password)
+        console.log(user);
+    }
+    
     return (
-        <div className='master'>
-            <div className='container'>
-                <form>
-                <h1 className='title'>Login</h1>
-                    <div className='input-group'>
+        <div className='form-container'>
+            <div>
+                <h2 className='form-title'>Login</h2>
+                <form onSubmit={prevent}>
+                    <div className="input-group">
                         <label htmlFor="email">Email</label>
-                        <input type="email" name="email" id="" />
+                        <input onBlur={handleEmailBlur}  type="email" name="email" id="" required />
                     </div>
-                    <div className='input-group'>
+                    <div className="input-group">
                         <label htmlFor="password">Password</label>
-                        <input type="password" name="email" id="" />
+                        <input onBlur={handlePasswordBlur} type="password" name="password" id="" required />
                     </div>
-                    <div className='input-group'>
-                        <label htmlFor=""></label>
-                        <input className='login-btn' type="submit" value="Login" />
-                    </div>
+                    <input className='form-submit' type="submit" value="Login" onClick={signInUser}/>
                 </form>
+                <p>
+                    New to Ema-John? <Link className='form-link' to="/signup">Create an account</Link>
+                </p>
             </div>
         </div>
     );
